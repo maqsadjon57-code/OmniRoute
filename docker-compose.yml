@@ -1,0 +1,28 @@
+version: "3.9"
+
+# OmniRoute — base profile runs the single gateway container.
+# full profile (future) additionally runs Redis + optional monitoring.
+services:
+  omniroute:
+    build: .
+    container_name: omniroute
+    profiles: ["base", "full"]
+    ports:
+      - "20128:20128"
+    environment:
+      OMNIROUTE_DATA_DIR: /app/data
+      OMNIROUTE_MASTER_KEY: ${OMNIROUTE_MASTER_KEY:-change-me-in-production}
+    volumes:
+      - omniroute-data:/app/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: omniroute-redis
+    profiles: ["full"]
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+volumes:
+  omniroute-data:

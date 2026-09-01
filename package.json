@@ -1,0 +1,66 @@
+{
+  "name": "omniroute",
+  "version": "0.1.0",
+  "description": "OmniRoute — universal AI gateway: one OpenAI-compatible endpoint for 352+ AI providers, 150+ free tiers, 19 routing strategies, and 12 token-compression engines.",
+  "license": "MIT",
+  "author": "OmniRoute Contributors",
+  "homepage": "https://github.com/maqsadjon57-code/OmniRoute",
+  "type": "module",
+  "bin": {
+    "omniroute": "./cli/omniroute.js"
+  },
+  "scripts": {
+    "dev": "next dev --port 20128",
+    "build": "next build",
+    "start": "next start --port 20128",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "cli": "node cli/omniroute.js"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "better-sqlite3": "^13.0.3",
+    "clsx": "^2.1.1",
+    "jose": "^6.2.10",
+    "lucide-react": "^1.39.0",
+    "next": "^16.3.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "recharts": "^3.10.1",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.34.0",
+    "@next/eslint-plugin-next": "^16.3.4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "eslint": "^9.34.0",
+    "eslint-config-next": "^16.3.4",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "ai-gateway",
+    "llm",
+    "openai",
+    "gateway",
+    "router",
+    "claude",
+    "gpt",
+    "gemini",
+    "deepseek"
+  ]
+}
