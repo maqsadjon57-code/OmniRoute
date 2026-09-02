@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Установка AI Fitness Pro на телефон</title>
+<style>
+body{background:#0F172A;color:white;font-family:Inter,system-ui,sans-serif;margin:0;padding:20px}
+.container{max-width:800px;margin:0 auto}
+.card{background:#1E293B;border-radius:20px;padding:24px;margin-bottom:20px}
+h1{font-size:28px;margin:0 0 8px}
+.badge{background:#22C55E;color:black;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:12px}
+.qr-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+@media(max-width:600px){.qr-grid{grid-template-columns:1fr}}
+.qr-box{background:white;border-radius:16px;padding:16px;text-align:center;color:#0F172A}
+.qr-box img{width:100%;max-width:240px}
+.btn{background:#1D4ED8;color:white;border:none;padding:12px 20px;border-radius:12px;font-weight:bold;cursor:pointer;display:inline-block;text-decoration:none;margin:4px}
+.btn-sec{background:#334155}
+code{background:#0F172A;padding:2px 6px;border-radius:4px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card" style="text-align:center">
+<div class="badge">AI FITNESS CAMERA PRO • v1.0</div>
+<h1>📱 Установка на телефон</h1>
+<p>3 способа запустить: мгновенно в браузере (QR) или как нативное Android приложение</p>
+</div>
+
+<div class="card">
+<h2>🚀 Способ 1: Мгновенный запуск (iPhone + Android) — 5 секунд</h2>
+<p>Работает прямо в браузере, без установки. Использует MediaPipe Web — та же логика что и в Android APK.</p>
+<div class="qr-grid">
+<div class="qr-box">
+<img src="qr.png" alt="QR Demo">
+<h3>Отсканируйте камерой</h3>
+<p style="font-size:12px;word-break:break-all">https://3000-ia98rlr97a8r49bm03emm.e2b.app</p>
+<a class="btn" href="/" target="_blank">Открыть демо</a>
+</div>
+<div style="font-size:14px;line-height:1.6">
+<b>iPhone (Safari):</b><br>
+1. Откройте Камеру → наведите на QR<br>
+2. Нажмите на ссылку сверху<br>
+3. Разрешите камеру → «Разрешить»<br>
+4. Поставьте телефон на пол, отжимайтесь боком к камере<br><br>
+<b>Android (Chrome):</b><br>
+1. Камера или Google Lens → QR<br>
+2. Открыть в Chrome<br>
+3. Разрешить камеру<br>
+4. Отжимайтесь — счётчик и 0.1₽/повтор!<br><br>
+<b>💡 Совет:</b> Поставьте телефон на расстоянии 2-3 метра, чтобы было видно всё тело. Боком лучше для отжиманий.
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>📦 Способ 2: Нативный Android APK</h2>
+<p>Полное приложение из ТЗ с CameraX, Room, Hilt, Firebase, AdMob, Billing.</p>
+<h3>Сборка APK:</h3>
+<pre style="background:#0F172A;padding:12px;border-radius:8px;overflow:auto;font-size:12px">
+cd android
+# Добавьте google-services.json в app/
+# Скачайте pose_landmarker_lite.task в app/src/main/assets/
+./gradlew assembleDebug
+# APK: app/build/outputs/apk/debug/app-debug.apk
+
+# Для QR установки залейте APK в Firebase App Distribution / Diawi
+# или запустите локально:
+python3 -m http.server 8000
+# Откройте http://YOUR_IP:8000/app-debug.apk на телефоне
+</pre>
+<p>После установки: дайте разрешения Камера + Уведомления. Логин через Firebase Auth.</p>
+<div style="margin-top:12px">
+<span class="badge" style="background:#F59E0B">Требования: Android 8.0+, 2GB RAM, камера</span>
+</div>
+</div>
+
+<div class="card">
+<h2>🍎 Способ 3: iPhone как PWA (Добавить на главный экран)</h2>
+<p>Веб-демо можно установить как приложение:</p>
+<ol style="line-height:1.8;font-size:14px">
+<li>Откройте демо по QR в Safari</li>
+<li>Нажмите <code>Поделиться</code> → <code>На экран «Домой»</code></li>
+<li>Назовите «AI Fitness» → Добавить</li>
+<li>Запускайте с иконки как нативное приложение, fullscreen, без адресной строки</li>
+</ol>
+<p style="font-size:13px;color:#94A3B8">PWA использует тот же MediaPipe, работает офлайн (кэш), видео не уходит с устройства. Для выплат и соревнований нужен онлайн (сервер уже запущен).</p>
+</div>
+
+<div class="card">
+<h2>🔗 Ссылки</h2>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<a class="btn" href="/">🌐 Веб-демо</a>
+<a class="btn btn-sec" href="/qr.html">📷 QR страница</a>
+<a class="btn btn-sec" href="/health">❤️ Health Check</a>
+<a class="btn btn-sec" href="https://github.com/maqsadjon57-code/OmniRoute" target="_blank">GitHub</a>
+</div>
+<p style="font-size:12px;color:#64748B;margin-top:12px">Сэндбокс Arena живёт ~2 часа. Если QR перестал работать — перезапустите сервер: <code>cd server && node simple-server.js</code> и сгенерируйте новый QR: <code>python3 generate_qr.py</code>. Для продакшена задеплойте на Vercel / Render / VPS с Docker Compose.</p>
+</div>
+</div>
+</body>
+</html>
