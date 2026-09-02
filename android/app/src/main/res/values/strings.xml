@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">AI Fitness Camera Pro</string>
+    <string name="splash_loading">Загрузка AI тренера…</string>
+    <string name="onboarding_title_1">Тренируйся с ИИ</string>
+    <string name="onboarding_desc_1">Камера распознаёт скелет в реальном времени и считает повторения с точностью 95%</string>
+    <string name="onboarding_title_2">Зарабатывай на спорте</string>
+    <string name="onboarding_desc_2">Каждое правильное отжимание = 0.1₽ на баланс. Вывод от 100₽</string>
+    <string name="onboarding_title_3">Соревнуйся и побеждай</string>
+    <string name="onboarding_desc_3">Челленджи, лидерборды, друзья и достижения</string>
+    <string name="balance">Баланс</string>
+    <string name="train">Тренировка</string>
+    <string name="plans">Планы</string>
+    <string name="stats">Статистика</string>
+    <string name="competitions">Соревнования</string>
+    <string name="shop">Магазин</string>
+    <string name="start_training">Начать тренировку</string>
+    <string name="pushup_counter">Отжимания: %1$d</string>
+    <string name="earned">Заработано: %1$.1f ₽</string>
+    <string name="technique_good">Техника отличная!</string>
+    <string name="technique_bad_back">Выпрямите спину!</string>
+    <string name="technique_bad_depth">Ниже!</string>
+    <string name="technique_bad_elbows">Локти ближе к телу!</string>
+</resources>

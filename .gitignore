@@ -1,0 +1,29 @@
+# Android
+.gradle/
+build/
+*.apk
+*.aab
+local.properties
+*.keystore
+*.jks
+captures/
+.externalNativeBuild/
+.cxx/
+*.ap_
+# IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+# Node
+node_modules/
+dist/
+.env
+.env.local
+# OS
+.DS_Store
+Thumbs.db
+# Secrets
+google-services.json
+serviceAccountKey.json
+*.pem

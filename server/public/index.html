@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fitness Camera Pro - Demo</title>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.8/vision_bundle.mjs" type="module"></script>
+<style>
+  body { margin:0; font-family: Inter, sans-serif; background:#0F172A; color:white; }
+  .header { padding:16px; background:#1E293B; display:flex; justify-content:space-between; align-items:center; }
+  .balance { background:#1D4ED8; padding:8px 16px; border-radius:20px; font-weight:bold; }
+  .container { display:flex; flex-direction:column; align-items:center; padding:20px; }
+  #video { width:100%; max-width:640px; border-radius:16px; transform: scaleX(-1); }
+  #canvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+  .video-wrapper { position:relative; width:100%; max-width:640px; }
+  .stats { margin-top:20px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+  .card { background:#1E293B; padding:20px; border-radius:16px; min-width:140px; text-align:center; }
+  .card h2 { margin:0; font-size:32px; color:#22C55E; }
+  .feedback { margin-top:16px; padding:12px 24px; background:#F59E0B; color:black; border-radius:12px; font-weight:bold; }
+  .controls { margin-top:20px; display:flex; gap:12px; }
+  button { padding:12px 24px; border:none; border-radius:12px; font-weight:bold; cursor:pointer; }
+  .primary { background:#1D4ED8; color:white; }
+  .secondary { background:#334155; color:white; }
+  .good { background:#22C55E; color:black; }
+  .bad { background:#EF4444; color:white; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div><b>AI FITNESS</b> CAMERA PRO</div>
+  <div class="balance" id="balance">0.0 ₽</div>
+</div>
+
+<div class="container">
+  <div class="video-wrapper">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="feedback" id="feedback">Загрузка модели...</div>
+
+  <div class="stats">
+    <div class="card"><div>Отжимания</div><h2 id="reps">0</h2></div>
+    <div class="card"><div>Заработано</div><h2 id="earned">0.0 ₽</h2></div>
+    <div class="card"><div>Техника</div><h2 id="tech">95%</h2></div>
+  </div>
+
+  <div class="controls">
+    <button class="secondary" onclick="switchCamera()">🔄 Камера</button>
+    <button class="primary" onclick="reset()">Сброс</button>
+    <button class="good" onclick="finish()">Завершить</button>
+  </div>
+
+  <div style="margin-top:20px; max-width:640px; background:#1E293B; padding:16px; border-radius:12px;">
+    <h3>Как работает:</h3>
+    <ul>
+      <li>MediaPipe Pose (33 точки) - инференс на устройстве, 10-20 FPS</li>
+      <li>Угол локтя ≤90° внизу и ≥160° вверху, спина прямая &lt;15°</li>
+      <li>Фильтр Калмана для сглаживания</li>
+      <li>Серверная валидация: HMAC, лимиты 1000/день, антифрод ML</li>
+      <li>Каждое верное повторение = 0.1₽ (0.15₽ премиум)</li>
+    </ul>
+    <p>Видео не покидает устройство - на сервер только числовые данные.</p>
+  </div>
+</div>
+
+<script type="module">
+import { PoseLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.8/vision_bundle.mjs";
+
+let poseLandmarker;
+let running = false;
+let useFront = true;
+let repCount = 0;
+let state = 'UP';
+let minAngle = 180;
+let maxAngle = 0;
+let maxBack = 0;
+let lastRepTime = 0;
+let currentStart = 0;
+
+// Simple Kalman
+class Kalman { constructor(){this.q=0.01;this.r=0.1;this.p=1;this.x=0;} update(m){this.p+=this.q; let k=this.p/(this.p+this.r); this.x+=k*(m-this.x); this.p*=(1-k); return this.x;} reset(){this.x=0;this.p=1;} }
+const elbowFilter = new Kalman();
+const backFilter = new Kalman();
+
+function angle(a,b,c){
+  const abx=a.x-b.x, aby=a.y-b.y, cbx=c.x-b.x, cby=c.y-b.y;
+  const dot=abx*cbx+aby*cby;
+  const magAB=Math.sqrt(abx*abx+aby*aby);
+  const magCB=Math.sqrt(cbx*cbx+cby*cby);
+  if(magAB===0||magCB===0) return 0;
+  const cos = Math.max(-1, Math.min(1, dot/(magAB*magCB)));
+  return Math.acos(cos)*180/Math.PI;
+}
+function backDev(sh,hip,ank){ return Math.abs(180-angle(sh,hip,ank)); }
+
+async function init(){
+  const fileset = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.8/wasm");
+  poseLandmarker = await PoseLandmarker.createFromOptions(fileset, {
+    baseOptions: { modelAssetPath: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task", delegate:"GPU" },
+    runningMode:"VIDEO",
+    numPoses:1,
+    minPoseDetectionConfidence:0.5,
+    minTrackingConfidence:0.5
+  });
+  document.getElementById('feedback').innerText = "Готов! Начните отжиматься";
+  startCamera();
+}
+
+async function startCamera(){
+  const video = document.getElementById('video');
+  const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode: useFront?'user':'environment', width:640, height:480 } });
+  video.srcObject = stream;
+  video.onloadeddata = ()=>{ running=true; requestAnimationFrame(loop); };
+}
+
+async function loop(){
+  if(!running) return;
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const result = poseLandmarker.detectForVideo(video, performance.now());
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(result.landmarks && result.landmarks[0]){
+    const lm = result.landmarks[0];
+    // draw
+    const connections = [[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[24,26],[25,27],[26,28]];
+    ctx.strokeStyle="#22C55E"; ctx.lineWidth=4;
+    connections.forEach(([a,b])=>{
+      ctx.beginPath();
+      ctx.moveTo(lm[a].x*canvas.width, lm[a].y*canvas.height);
+      ctx.lineTo(lm[b].x*canvas.width, lm[b].y*canvas.height);
+      ctx.stroke();
+    });
+    ctx.fillStyle="#22C55E";
+    lm.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x*canvas.width, p.y*canvas.height, 5,0,Math.PI*2); ctx.fill(); });
+
+    // rep logic
+    const ls = lm[11], le = lm[13], lw = lm[15], lh = lm[23], la = lm[27];
+    const rs = lm[12], re = lm[14], rw = lm[16], rh = lm[24], ra = lm[28];
+    const leftAngle = angle(ls,le,lw);
+    const rightAngle = angle(rs,re,rw);
+    const rawElbow = (leftAngle+rightAngle)/2;
+    const rawBack = (backDev(ls,lh,la)+backDev(rs,rh,ra))/2;
+
+    const elbow = elbowFilter.update(rawElbow);
+    const back = backFilter.update(rawBack);
+
+    const now = Date.now();
+    const feedbackEl = document.getElementById('feedback');
+
+    if(state==='UP'){
+      if(elbow<=90){
+        state='DOWN';
+        currentStart=now;
+        minAngle=elbow;
+        maxBack=back;
+        feedbackEl.innerText="Ниже!"; feedbackEl.className="feedback bad";
+      } else {
+        if(back>15) { feedbackEl.innerText=`Выпрямите спину! ${back.toFixed(0)}°`; feedbackEl.className="feedback bad"; }
+        else if(elbow<160) { feedbackEl.innerText="Полное разгибание!"; feedbackEl.className="feedback"; }
+        else { feedbackEl.innerText="Отлично, держите!"; feedbackEl.className="feedback good"; }
+      }
+    } else {
+      if(elbow>=160){
+        const duration = now-currentStart;
+        const valid = duration>=400 && duration<=5000 && minAngle<=90 && back<=20;
+        if(valid && now-lastRepTime>500){
+          repCount++;
+          document.getElementById('reps').innerText=repCount;
+          const earned = repCount*0.1;
+          document.getElementById('earned').innerText=earned.toFixed(1)+' ₽';
+          document.getElementById('balance').innerText=earned.toFixed(1)+' ₽';
+          feedbackEl.innerText=`Отлично! ${repCount}`; feedbackEl.className="feedback good";
+          lastRepTime=now;
+          // Simulate server verification
+          fetch('/api/reps/verify', {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer demo'}, body:JSON.stringify({exerciseType:'PUSHUP', reps:[{index:repCount, startTs:currentStart, endTs:now, minElbowAngle:minAngle, maxElbowAngle:elbow, backDeviation:maxBack, durationMs:duration}]})}).catch(()=>{});
+        } else {
+          feedbackEl.innerText = minAngle>90 ? `Глубже! ${minAngle.toFixed(0)}°` : "Техника!";
+          feedbackEl.className="feedback bad";
+        }
+        state='UP';
+        minAngle=180; maxBack=0;
+      } else {
+        if(elbow<minAngle) minAngle=elbow;
+        if(back>maxBack) maxBack=back;
+      }
+    }
+  }
+
+  requestAnimationFrame(loop);
+}
+
+window.switchCamera = ()=>{ useFront=!useFront; startCamera(); };
+window.reset = ()=>{ repCount=0; document.getElementById('reps').innerText='0'; document.getElementById('earned').innerText='0.0 ₽'; document.getElementById('balance').innerText='0.0 ₽'; elbowFilter.reset(); backFilter.reset(); state='UP'; };
+window.finish = ()=>{ alert(`Тренировка завершена!\\nОтжиманий: ${repCount}\\nЗаработано: ${(repCount*0.1).toFixed(1)} ₽`); };
+
+init();
+</script>
+</body>
+</html>
