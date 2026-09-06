@@ -20,6 +20,7 @@
   }
   .help-grid { grid-template-columns: 1fr; }
   .titlebar-title { font-size: 11px; }
+  .key-btn .key-label { display: none; }
 }
 
 @media (max-width: 640px) {

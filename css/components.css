@@ -616,6 +616,198 @@
   caret-color: var(--accent);
 }
 
+/* Model chip + API key button */
+.model-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 8px 0 9px;
+  margin-right: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  -webkit-app-region: no-drag;
+}
+
+.model-chip:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
+}
+
+.model-chip .caret {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+#model-icon {
+  color: var(--accent);
+}
+
+.key-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 9px;
+  margin-right: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  -webkit-app-region: no-drag;
+}
+
+.key-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.key-btn.missing {
+  color: #1a1a1a;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.key-btn.missing:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.key-btn.ok {
+  color: var(--success);
+  border-color: rgba(126, 231, 135, 0.35);
+}
+
+.key-btn.ok:hover {
+  background: var(--success-dim);
+}
+
+.sb-item.key-missing { color: var(--warning); }
+.sb-item.key-ok { color: var(--success); }
+
+/* Model dropdown */
+.model-menu {
+  position: fixed;
+  z-index: 70;
+  width: 320px;
+  max-height: min(460px, 70vh);
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-hover);
+  border-radius: 10px;
+  box-shadow: var(--shadow-xl);
+  padding: 6px;
+}
+
+.model-menu-head {
+  padding: 6px 10px 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.model-group {
+  padding: 8px 10px 4px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.model-item {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 6px;
+  color: var(--text-primary);
+}
+
+.model-item:hover { background: var(--bg-hover); }
+.model-item.active { background: var(--accent-dim); }
+
+.mi-icon { width: 16px; color: var(--accent); margin-top: 1px; }
+.mi-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.mi-name { font-size: 12px; font-weight: 600; }
+.mi-name em {
+  font-style: normal;
+  font-weight: 500;
+  color: var(--accent);
+  font-size: 10px;
+  margin-left: 6px;
+}
+.mi-desc { font-size: 10px; color: var(--text-muted); }
+.mi-check { color: var(--success); font-size: 12px; }
+
+.model-custom {
+  display: flex;
+  gap: 6px;
+  padding: 8px 8px 6px;
+  border-top: 1px solid var(--border);
+  margin-top: 6px;
+}
+
+.model-custom input {
+  flex: 1;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 11px;
+}
+
+/* API key modal fields */
+.field-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 10px 0 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.key-input-row {
+  display: flex;
+  gap: 6px;
+}
+
+.key-input-row input,
+.apikey-modal input[type="text"],
+.apikey-modal input[type="password"] {
+  flex: 1;
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.key-input-row input:focus,
+.apikey-modal input:focus {
+  border-color: var(--border-focus);
+}
+
+.apikey-modal {
+  width: min(520px, calc(100% - 32px));
+}
+
 /* File preview modal */
 .file-preview .code-block {
   margin: 0;

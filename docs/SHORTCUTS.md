@@ -16,6 +16,8 @@
 | Search workspace | Ctrl+F |
 | Toggle sidebar | Ctrl+B |
 | Cycle theme | Ctrl+Shift+T |
+| API key | Ctrl+Shift+K |
+| Select model | Ctrl+Shift+M |
 | Focus composer | Ctrl+I or `/` |
 
 ## Tools

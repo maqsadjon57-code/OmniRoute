@@ -3,7 +3,7 @@
 import { sleep, parseArgs, basename, extOf, langFromExt, countLines, fmtBytes, BRAILLE, randomPhrase } from "./utils.js";
 import { fs } from "./files.js";
 import { Tools, TOOLS, runShell } from "./tools.js";
-import { addUser, addSystem, addError, addMessage, clearMessages } from "./output.js";
+import { addUser, addSystem, addError, addMessage, addAssistant, clearMessages } from "./output.js";
 import { streamText } from "./streaming.js";
 import { History, Conversation } from "./history.js";
 import { Settings } from "./settings.js";
@@ -15,6 +15,9 @@ import { COMMANDS } from "./autocomplete.js";
 import { download } from "./utils.js";
 import { Input } from "./input.js";
 import { bus } from "./utils.js";
+import { Keys } from "./keys.js";
+import { Claude, resetSession } from "./claude.js";
+import { MODELS, findModel, DEFAULT_MODEL, shortName } from "./models.js";
 
 let abort = null;
 let busy = false;
@@ -70,7 +73,7 @@ async function withThinking(fn) {
 }
 
 async function reply(text, signal) {
-  const { body } = addAssistant("");
+  const { body } = addMessage({ role: "assistant", text: "", persist: false });
   body.innerHTML = "";
   await streamText(body, text, { signal });
 }
@@ -93,8 +96,39 @@ async function handleSlash(raw, signal) {
     case "/reset":
     case "/new":
       Conversation.clear();
+      resetSession();
       bus.emit("cmd:welcome");
       Notify.info("Conversation reset");
+      return;
+    case "/model": {
+      const argm = arg.trim();
+      if (!argm) {
+        const cur = findModel(Settings.get("model") || DEFAULT_MODEL);
+        const list = MODELS.map((m) => `- ${m.id === cur.id ? "**" : ""}${m.icon} ${m.name}${m.tag ? ` (${m.tag})` : ""}${m.id === cur.id ? "** ←" : ""} — \`${m.id}\``).join("\n");
+        await reply(`Current model: **${cur.name}** (\`${cur.id}\`)\n\n${list}\n\nUsage: \`/model sonnet\` or \`/model claude-opus-5\``, signal);
+        return;
+      }
+      const q = argm.toLowerCase();
+      const hit = MODELS.find((m) => m.id === argm || m.id.toLowerCase() === q || m.name.toLowerCase() === q || m.family.toLowerCase() === q || m.name.toLowerCase().includes(q));
+      const id = hit ? hit.id : argm;
+      Settings.set("model", id);
+      bus.emit("model:change", id);
+      await reply(`Model set to **${shortName(id)}** (\`${id}\`).`, signal);
+      return;
+    }
+    case "/apikey":
+    case "/key":
+      if (arg.trim() && !["clear", "test"].includes(arg.trim().toLowerCase())) {
+        Keys.set(arg.trim());
+        await reply(`API key saved as \`${Keys.masked()}\`.`, signal);
+        return;
+      }
+      if (arg.trim().toLowerCase() === "clear") {
+        Keys.clear();
+        await reply("API key cleared. Local demo agent is active.", signal);
+        return;
+      }
+      bus.emit("ui:apikey");
       return;
     case "/history": {
       const items = History.list(30);
@@ -224,6 +258,7 @@ ${rows}
 **Tips**
 - \`Shift+Enter\` newline · \`Tab\` autocomplete · \`↑↓\` history
 - \`Ctrl+Shift+P\` command palette · \`Ctrl+L\` clear
+- **API Key** button (or \`/apikey\`) to talk to live Claude · \`/model\` to switch Opus / Sonnet / Haiku
 - Ask me to *create*, *read*, *edit*, or *run* files in the virtual workspace.
 `;
 }
@@ -242,8 +277,11 @@ Tools run against the in-browser filesystem at \`${fs.cwd}\`. Dangerous commands
 
 function statusText() {
   const sb = StatusBar.get();
+  const model = findModel(Settings.get("model") || DEFAULT_MODEL);
   return `**Session**
 - Status: ${sb.status}
+- Model: **${model.name}** (\`${model.id}\`)
+- API key: ${Keys.has() ? Keys.masked() + " · live Claude" : "not set · local demo agent"}
 - cwd: \`${fs.cwd}\`
 - Files: ${fs.summary()}
 - Theme: ${Settings.get("theme")}
@@ -585,6 +623,23 @@ export async function submit(text) {
   text = String(text).replace(/\s+$/, "");
   if (!text) return;
   addUser(text);
+
+  if (!text.startsWith("/") && Keys.has()) {
+    busy = true;
+    Input.setDisabled(true);
+    abort = new AbortController();
+    try {
+      await Claude.chat(text, abort.signal);
+    } catch {
+      /* rendered in Claude.chat */
+    } finally {
+      busy = false;
+      abort = null;
+      Input.setDisabled(false);
+      Input.focus();
+    }
+    return;
+  }
 
   await withThinking(async (signal) => {
     if (text.startsWith("/")) {

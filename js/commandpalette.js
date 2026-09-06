@@ -30,6 +30,8 @@ const ACTIONS = [
   { id: "theme.midnight", title: "Theme: Midnight", desc: "GitHub-like", icon: "🌌", run: () => Theme.set("midnight") },
   { id: "sidebar", title: "Toggle sidebar", desc: "File tree", icon: "📂", run: () => bus.emit("ui:sidebar") },
   { id: "settings", title: "Open settings", desc: "Preferences", icon: "⚙️", run: () => bus.emit("ui:settings") },
+  { id: "apikey", title: "API Key", desc: "Paste Anthropic key", icon: "🔑", run: () => bus.emit("ui:apikey") },
+  { id: "models", title: "Select model", desc: "Opus / Sonnet / Haiku", icon: "◈", run: () => bus.emit("ui:models") },
   { id: "clear", title: "Clear screen", desc: "Ctrl+L", icon: "🧹", run: () => bus.emit("cmd:clear") },
 ];
 

@@ -2,7 +2,19 @@
 
 The UI talks to an agent through `js/api.js`.
 
-## Local agent (default)
+## Anthropic API
+
+Paste a key via the **API Key** button. Requests go to `POST {base}/v1/messages` with:
+
+- `x-api-key`
+- `anthropic-version: 2023-06-01`
+- `anthropic-dangerous-direct-browser-access: true` (browser CORS)
+
+Model IDs live in `js/models.js` (Sonnet 5, Opus 5, Haiku 4.5, Fable 5, …). Change with the model chip or `/model`.
+
+The key is stored in `localStorage` (`ccweb.anthropic.apikey`), not in exported settings.
+
+## Local agent (no key)
 
 `API.submit(text)` parses slash commands and natural language, then calls tools in `js/tools.js`.
 

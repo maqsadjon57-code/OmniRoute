@@ -13,6 +13,7 @@ import { renderWelcome, renderTree, toggleSidebar, wireChrome } from "./terminal
 import { TOOLS } from "./tools.js";
 import { Notify } from "./notifications.js";
 import { fs } from "./files.js";
+import { initAuthUI, refreshKeyUI } from "./auth.js";
 
 function initTooltips() {
   const tip = document.getElementById("tooltip");
@@ -42,6 +43,8 @@ async function boot() {
   Input.init();
   initShortcuts();
   initTooltips();
+  initAuthUI();
+  refreshKeyUI();
 
   bus.on("input:submit", (text) => API.submit(text));
   bus.on("ui:palette", openPalette);

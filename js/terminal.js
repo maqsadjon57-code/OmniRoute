@@ -24,6 +24,7 @@ export function renderWelcome() {
     </div>
     <p>I'm an AI coding assistant that lives in the terminal — now in your browser.</p>
     <p>/help for help, /status for your current setup · Ctrl+Shift+P command palette</p>
+    <p>Click <strong>API Key</strong> to paste an Anthropic key, then pick a model (Sonnet 5, Opus 5, Haiku 4.5…).</p>
     <div class="cwd">cwd: <span>${escapeHtml(fs.cwd)}</span></div>
   `;
   box.append(welcome);
@@ -145,6 +146,14 @@ export function openSettings() {
         ${rowToggle("word_wrap", "Word wrap", s.word_wrap)}
         ${rowNumber("tab_size", "Tab size", s.tab_size, 2, 8)}
         ${rowToggle("autocomplete", "Autocomplete", s.autocomplete)}
+      </div>
+      <div class="settings-group"><h3>Claude</h3>
+        <div class="setting-row"><label>Model</label>
+          <button class="btn" id="set-model">${escapeHtml(s.model || "claude-sonnet-5")}</button>
+        </div>
+        <div class="setting-row"><label>API key</label>
+          <button class="btn btn-primary" id="set-apikey">API Key</button>
+        </div>
       </div>
       <div class="settings-group"><h3>Agent</h3>
         ${rowToggle("streaming", "Stream replies", s.streaming)}

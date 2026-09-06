@@ -29,6 +29,7 @@ const DEFAULTS = {
   language: "en",
   cwd: "/project",
   username: "developer",
+  model: "claude-sonnet-5",
 };
 
 function load() {

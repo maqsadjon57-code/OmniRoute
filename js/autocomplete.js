@@ -30,6 +30,8 @@ export const COMMANDS = [
   { cmd: "/cwd", desc: "Print or change directory", icon: "📁" },
   { cmd: "/save", desc: "Save workspace", icon: "💾" },
   { cmd: "/new", desc: "New conversation", icon: "✨" },
+  { cmd: "/model", desc: "List or set Claude model", icon: "◈" },
+  { cmd: "/apikey", desc: "Set Anthropic API key", icon: "🔑" },
   { cmd: "/exit", desc: "Quit (minimizes window)", icon: "🚪" },
 ];
 

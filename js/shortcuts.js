@@ -81,15 +81,21 @@ export function initShortcuts() {
       return;
     }
 
-    if (e.key === "k" && meta && e.shiftKey) {
-      e.preventDefault();
-      bus.emit("cmd:clear");
-      return;
-    }
-
     if (e.key === "t" && meta && e.shiftKey) {
       e.preventDefault();
       Theme.cycle();
+      return;
+    }
+
+    if ((e.key === "k" || e.key === "K") && meta && e.shiftKey && !e.altKey) {
+      e.preventDefault();
+      bus.emit("ui:apikey");
+      return;
+    }
+
+    if ((e.key === "m" || e.key === "M") && meta && e.shiftKey && !e.altKey) {
+      e.preventDefault();
+      bus.emit("ui:models");
       return;
     }
 
@@ -148,6 +154,8 @@ export const SHORTCUTS_HELP = [
   ["Search files", "Ctrl+F"],
   ["Toggle sidebar", "Ctrl+B"],
   ["Cycle theme", "Ctrl+Shift+T"],
+  ["API key", "Ctrl+Shift+K"],
+  ["Select model", "Ctrl+Shift+M"],
   ["Focus input", "Ctrl+I"],
 ];
 

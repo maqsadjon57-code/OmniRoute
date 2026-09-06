@@ -22,5 +22,6 @@
   "show_timestamps": false,
   "language": "en",
   "cwd": "/project",
-  "username": "developer"
+  "username": "developer",
+  "model": "claude-sonnet-5"
 }

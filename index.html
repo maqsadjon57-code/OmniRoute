@@ -32,6 +32,15 @@
         <span class="brand">claude-code</span> — bash — 80×24
       </div>
       <div class="titlebar-actions">
+        <button class="model-chip" id="btn-model" type="button" title="Select Claude model">
+          <span id="model-icon">◈</span>
+          <span id="model-label">Sonnet 5</span>
+          <span class="caret">▾</span>
+        </button>
+        <button class="key-btn missing" id="btn-apikey" type="button" title="Paste your Anthropic API key">
+          <svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="3"/><path d="M10.5 12h9M16 12v3M19 12v2"/></svg>
+          <span class="key-label">API Key</span>
+        </button>
         <button class="icon-btn" id="btn-sidebar" title="Toggle file tree (Ctrl+B)">
           <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>
         </button>
@@ -96,6 +105,12 @@
       </div>
       <div class="sb-item clickable" id="sb-cwd-wrap" title="Working directory">
         📁 <span id="sb-cwd">/project</span>
+      </div>
+      <div class="sb-item clickable" id="sb-model-wrap" title="Change model">
+        ◈ <span id="sb-model">Sonnet 5</span>
+      </div>
+      <div class="sb-item clickable key-missing" id="sb-key-wrap" title="API key">
+        🔑 <span id="sb-key">no key</span>
       </div>
       <div class="sb-item hide-sm" title="Available tools">
         🔧 <span id="sb-tools">12 tools</span>

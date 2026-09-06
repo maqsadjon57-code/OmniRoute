@@ -24,7 +24,9 @@ Then visit the served URL.
 - File tree sidebar (`Ctrl+B`)
 - Simulated shell: `ls`, `cat`, `pwd`, `git`, `node`, `python`, …
 
-This demo agent runs **locally in the browser**. It is not affiliated with Anthropic and does not call Claude unless you wire `js/websocket.js` to your own backend.
+Click **API Key** in the titlebar (or `/apikey`) and paste a key from [console.anthropic.com](https://console.anthropic.com/settings/keys). Pick a model with the chip next to it (Sonnet 5, Opus 5, Haiku 4.5, …).
+
+Without a key, a local demo agent still runs slash commands and simple file tasks. With a key, prompts go to the Anthropic Messages API (`anthropic-dangerous-direct-browser-access`) and Claude can use workspace tools.
 
 ## Project layout
 
