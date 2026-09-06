@@ -1,0 +1,64 @@
+/* Responsive — phone, tablet, desktop */
+
+@media (max-width: 1024px) {
+  body { padding: 10px; }
+  .app-shell {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+  }
+  .sidebar { width: 200px; }
+}
+
+@media (max-width: 860px) {
+  .sidebar {
+    position: absolute;
+    inset: var(--titlebar-h) auto var(--statusbar-h) 0;
+    z-index: 25;
+    height: auto;
+    box-shadow: var(--shadow-lg);
+  }
+  .help-grid { grid-template-columns: 1fr; }
+  .titlebar-title { font-size: 11px; }
+}
+
+@media (max-width: 640px) {
+  body { padding: 0; background: var(--bg-primary); }
+  .app-shell {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+  }
+  .messages { padding: 12px 12px 8px; }
+  .input-dock { padding: 6px 10px 4px; }
+  .input-hints { display: none; }
+  .statusbar { font-size: 10px; overflow-x: auto; }
+  .sb-item { padding: 0 6px; }
+  .sb-item.hide-sm { display: none; }
+  .modal, .palette, .settings-panel, .search-panel {
+    width: calc(100% - 16px);
+  }
+  .modal-actions { justify-content: stretch; }
+  .modal-actions .btn { flex: 1; justify-content: center; }
+  .traffic { gap: 6px; }
+  .welcome { padding: 12px; }
+  .toasts { left: 8px; right: 8px; }
+  .toast { max-width: none; }
+}
+
+@media (min-width: 1280px) {
+  .app-shell {
+    width: min(1280px, 100%);
+    height: min(820px, 100%);
+  }
+}
+
+@media (display-mode: fullscreen) {
+  body { padding: 0; }
+  .app-shell {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+}

@@ -1,0 +1,71 @@
+/* Light theme */
+
+[data-theme="light"] {
+  --bg-primary: #f6f5f3;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #eceae6;
+  --bg-hover: #e4e1db;
+  --bg-selected: #ddd8d0;
+  --bg-input: #ffffff;
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #7a7a7a;
+  --text-disabled: #a0a0a0;
+
+  --accent: #c45c38;
+  --accent-hover: #d97757;
+  --accent-light: #9a4a2e;
+  --accent-dim: rgba(196, 92, 56, 0.12);
+  --accent-glow: rgba(196, 92, 56, 0.2);
+
+  --success: #1a7f37;
+  --warning: #9a6700;
+  --error: #cf222e;
+  --info: #0969da;
+
+  --syntax-keyword: #cf222e;
+  --syntax-string: #0a3069;
+  --syntax-number: #0550ae;
+  --syntax-comment: #6e7781;
+  --syntax-function: #8250df;
+  --syntax-variable: #953800;
+  --syntax-type: #1a7f37;
+
+  --border: #d8d4cc;
+  --border-hover: #c4bfb4;
+  --border-focus: #c45c38;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+
+  --diff-add: rgba(26, 127, 55, 0.12);
+  --diff-del: rgba(207, 34, 46, 0.1);
+}
+
+[data-theme="light"] body,
+[data-theme="light"] html {
+  background: #e8e4dc;
+}
+
+[data-theme="light"] .code-block {
+  background: #faf9f7;
+}
+
+[data-theme="light"] .perm-cmd {
+  background: #faf9f7;
+}
+
+[data-theme="light"] .tooltip {
+  background: #fff;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #cfc8bc;
+}
+
+[data-theme="light"] .code-line:hover {
+  background: rgba(0, 0, 0, 0.03);
+}

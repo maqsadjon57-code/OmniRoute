@@ -1,0 +1,166 @@
+/* Syntax highlighting + code blocks */
+
+.code-block {
+  margin: 10px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #161616;
+  font-size: var(--text-sm);
+}
+
+[data-theme="light"] .code-block {
+  background: #f3f1ed;
+}
+
+.code-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.code-head .file-icon {
+  color: var(--accent);
+}
+
+.code-head .file-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.code-head .lang-tag {
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 10px;
+}
+
+.code-head-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.code-head-actions button {
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  border: 1px solid transparent;
+}
+
+.code-head-actions button:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.code-head-actions button.copied {
+  color: var(--success);
+}
+
+.code-pre {
+  margin: 0;
+  overflow: auto;
+  max-height: 420px;
+  padding: 8px 0;
+  tab-size: 2;
+}
+
+.code-pre code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.code-line {
+  display: flex;
+  min-height: 1.55em;
+}
+
+.code-line:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ln {
+  width: 44px;
+  flex-shrink: 0;
+  text-align: right;
+  padding: 0 10px 0 8px;
+  color: var(--text-disabled);
+  user-select: none;
+}
+
+.lc {
+  flex: 1;
+  padding-right: 12px;
+  white-space: pre;
+}
+
+.code-block.wrap .lc {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.code-foot {
+  display: flex;
+  gap: 12px;
+  padding: 5px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+/* Token colors */
+.tok-kw { color: var(--syntax-keyword); }
+.tok-str { color: var(--syntax-string); }
+.tok-num { color: var(--syntax-number); }
+.tok-cmt { color: var(--syntax-comment); font-style: italic; }
+.tok-fn { color: var(--syntax-function); }
+.tok-var { color: var(--syntax-variable); }
+.tok-type { color: var(--syntax-type); }
+.tok-op { color: var(--syntax-operator); }
+.tok-punc { color: var(--syntax-punctuation); }
+.tok-prop { color: var(--syntax-property); }
+.tok-tag { color: var(--syntax-tag); }
+.tok-attr { color: var(--syntax-attr); }
+.tok-builtin { color: var(--syntax-function); }
+
+/* Inline code in markdown */
+.msg-body :not(pre) > code,
+.msg-body p code,
+.msg-body li code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--accent-light);
+  background: var(--bg-tertiary);
+  padding: 0 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+/* Highlighted search match inside code */
+.hl-match {
+  background: rgba(210, 153, 34, 0.35);
+  border-radius: 2px;
+}
+
+/* Language badge colors */
+.lang-js, .lang-javascript, .lang-ts, .lang-typescript { color: #f1e05a; }
+.lang-py, .lang-python { color: #3572A5; }
+.lang-html { color: #e34c26; }
+.lang-css { color: #563d7c; }
+.lang-json { color: #7ee787; }
+.lang-md, .lang-markdown { color: var(--text-secondary); }
+.lang-bash, .lang-sh, .lang-shell { color: var(--success); }
+.lang-go { color: #00add8; }
+.lang-rs, .lang-rust { color: #dea584; }

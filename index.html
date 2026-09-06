@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="description" content="Claude Code Web — a terminal-first AI coding agent in the browser." />
+  <title>claude-code — bash — 80×24</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect rx='12' width='64' height='64' fill='%231a1a1a'/><text x='32' y='44' text-anchor='middle' font-size='36' fill='%23d97757'>✻</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/terminal.css" />
+  <link rel="stylesheet" href="css/syntax.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/themes/dark.css" />
+  <link rel="stylesheet" href="css/themes/light.css" />
+  <link rel="stylesheet" href="css/themes/custom.css" />
+</head>
+<body>
+  <div class="app-shell" id="app" role="application" aria-label="Claude Code">
+    <header class="titlebar" id="titlebar">
+      <div class="traffic">
+        <button class="traffic-btn close" id="btn-close" title="Close"></button>
+        <button class="traffic-btn min" id="btn-min" title="Minimize"></button>
+        <button class="traffic-btn max" id="btn-max" title="Maximize"></button>
+      </div>
+      <div class="titlebar-title" id="title-text">
+        <span class="brand">claude-code</span> — bash — 80×24
+      </div>
+      <div class="titlebar-actions">
+        <button class="icon-btn" id="btn-sidebar" title="Toggle file tree (Ctrl+B)">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-search" title="Search (Ctrl+F)">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-palette" title="Command palette (Ctrl+Shift+P)">
+          <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-settings" title="Settings (Ctrl+,)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M5.2 6.2l1.4 1.4M17.4 16.4l1.4 1.4M3 12h2M19 12h2M5.2 17.8l1.4-1.4M17.4 7.6l1.4-1.4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="thinking-bar" id="thinking-bar"><div class="progress-bar"></div></div>
+
+    <div class="app-body">
+      <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-head">
+          <span>Explorer</span>
+          <button class="icon-btn" id="btn-refresh-tree" title="Refresh" onclick="document.dispatchEvent(new Event('fs:refresh'))">↺</button>
+        </div>
+        <div class="sidebar-body" id="tree"></div>
+        <div class="sidebar-foot" id="sidebar-foot">workspace</div>
+      </aside>
+
+      <div class="main-col">
+        <div class="terminal" id="terminal">
+          <div class="drop-overlay">Drop files to import into /project</div>
+          <div class="messages" id="messages" role="log" aria-live="polite"></div>
+        </div>
+
+        <div class="input-dock" id="input-dock">
+          <div class="hist-search" id="hist-search">
+            <label>bck-i-search:</label>
+            <input id="hist-search-input" placeholder="type to search history" autocomplete="off" />
+            <span class="hist-match" id="hist-match"></span>
+          </div>
+          <div class="input-wrap">
+            <div class="prompt-char">❯</div>
+            <div class="input-area">
+              <textarea id="composer" rows="1" placeholder="Message Claude…  (/ for commands)" spellcheck="false" autocomplete="off"></textarea>
+              <div class="ac-menu" id="ac-menu"></div>
+            </div>
+          </div>
+          <div class="input-hints">
+            <span>shift+enter newline · tab complete · / commands</span>
+            <span class="hint-right">
+              <span>ctrl+shift+p palette</span>
+              <span>esc cancel</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="statusbar" id="statusbar">
+      <div class="sb-item status-ready clickable" id="sb-status" title="Agent status">
+        <span class="dot"></span>
+        <span class="label">Ready</span>
+      </div>
+      <div class="sb-item clickable" id="sb-cwd-wrap" title="Working directory">
+        📁 <span id="sb-cwd">/project</span>
+      </div>
+      <div class="sb-item hide-sm" title="Available tools">
+        🔧 <span id="sb-tools">12 tools</span>
+      </div>
+      <div class="sb-item hide-sm" title="Workspace persistence">
+        💾 <span id="sb-saved">Saved</span>
+      </div>
+      <div class="sb-spacer"></div>
+      <div class="sb-item hide-sm" title="Network">
+        🌐 <span id="sb-net">Online</span>
+      </div>
+      <div class="sb-item" title="Cursor">
+        <span id="sb-cursor">1:1</span>
+      </div>
+      <div class="sb-item hide-sm" title="Session uptime">
+        ⏱ <span id="sb-uptime">0s</span>
+      </div>
+      <div class="sb-item" title="Encoding">UTF-8</div>
+      <div class="sb-item hide-sm" id="sb-clock"></div>
+    </footer>
+
+    <div class="overlay hidden" id="overlay"></div>
+    <div class="toasts" id="toasts"></div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
